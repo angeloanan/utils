@@ -1,9 +1,36 @@
 ---
 import Layout from '../layouts/Layout.astro'
+
+import RandomPortImage from '../assets/port.png'
+import ToolCard from '../components/ToolCard.astro'
+
+const tools = [
+  {
+    url: '/tools/port',
+    title: 'Random Port Selector',
+    description: 'Select a random port to map your docker container on.',
+    image: RandomPortImage
+  }
+]
 ---
 
 <Layout>
   <main class='mx-auto my-8 max-w-prose px-4 md:px-0'>
-    <h1 class='text-4xl font-semibold text-neutral-800 dark:text-neutral-50'>Hello world!</h1>
+    <h1 class='text-4xl font-semibold text-stone-100'>Angelo's Utils</h1>
+    <p class='mt-2 text-stone-400'>
+      A collection of utilities that I might find useful from time to time.
+    </p>
+
+    <hr class='my-4 border-stone-600' />
+
+    <ul class='grid grid-cols-1 items-center gap-4 p-2 sm:grid-cols-2'>
+      {
+        tools.map((tool) => (
+          <li class='mx-auto h-64'>
+            <ToolCard {...tool} />
+          </li>
+        ))
+      }
+    </ul>
   </main>
 </Layout>

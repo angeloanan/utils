@@ -1,0 +1,25 @@
+---
+import type { ImageMetadata } from 'astro'
+import { Image } from 'astro:assets'
+
+export interface Props {
+  url: string
+
+  title: string
+  description?: string
+
+  image: ImageMetadata
+}
+
+const { url, title, description, image } = Astro.props
+---
+
+<a class='block h-full max-w-80 rounded-xl bg-stone-700' href={url}>
+  <Image class='aspect-[2.09/1] h-auto rounded-t-xl' src={image} alt=`${title} header image` />
+  <div class='p-4'>
+    <h2 class='text-lg font-medium text-stone-200'>{title}</h2>
+    <p class='line-clamp-2 text-ellipsis text-stone-400'>
+      {description}
+    </p>
+  </div>
+</a>

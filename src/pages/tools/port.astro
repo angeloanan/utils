@@ -1,0 +1,20 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import { PortSelector } from '../../components/PortSelector.tsx'
+---
+
+<Layout
+  seo={{
+    title: 'Random Port Selector'
+  }}
+>
+  <main class='mx-auto my-8 max-w-prose px-4 text-stone-300 md:px-0'>
+    <a href='/' class='font-light text-stone-300'> &larr; Back to tools list</a>
+
+    <h1 class='mt-2 text-4xl font-semibold text-stone-100'>Random Port Selector</h1>
+
+    <hr class='my-4 border-stone-600' />
+
+    <PortSelector client:load />
+  </main>
+</Layout>

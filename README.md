@@ -32,26 +32,26 @@ pnpm install
 
 Must do:
 
-- [ ] Double check for any missing [`getStaticPaths()`](https://docs.astro.build/en/reference/api-reference/#getstaticpaths) on pages with dynamic params.
-- [ ] Whitelabel package.json with your project information (enable `private: true` if needed)
-- [ ] Lock dependencies version to major version
-- [ ] Replace `output` at [astro.config.mjs](./astro.config.mjs) with desired output target.
+- [X] Double check for any missing [`getStaticPaths()`](https://docs.astro.build/en/reference/api-reference/#getstaticpaths) on pages with dynamic params.
+- [X] Whitelabel package.json with your project information (enable `private: true` if needed)
+- [X] Lock dependencies version to major version
+- [X] Replace `output` at [astro.config.mjs](./astro.config.mjs) with desired output target.
   - `server` is good for mostly server-rendered pages with few static / prerendered content.
   - `hybrid` is good for mostly static sites with a few dynamic routes.
   - Read more: https://docs.astro.build/en/guides/server-side-rendering/#configure-server-or-hybrid
-  - [ ] If using `hybrid`, disable prerendering on unnecessary API routes
-- [ ] Replace `site` on [astro.config.mjs](./astro.config.mjs) with your site URL (sitemap)
-- [ ] Replace SEO configurations at [src/default-seo.ts](./src/default-seo.ts)
-  - [ ] Replace your favicon
-  - [ ] Optimize your robots.txt entry to account for [Verified Bots](https://radar.cloudflare.com/traffic/verified-bots)
+  - [X] If using `hybrid`, disable prerendering on unnecessary API routes
+- [X] Replace `site` on [astro.config.mjs](./astro.config.mjs) with your site URL (sitemap)
+- [X] Replace SEO configurations at [src/default-seo.ts](./src/default-seo.ts)
+  - [X] Replace your favicon
+  - [X] Optimize your robots.txt entry to account for [Verified Bots](https://radar.cloudflare.com/traffic/verified-bots)
 - [ ] Setup CI/CD that'll automatically deploy the app on update
   - [ ] Docker: Double check for dependencies vs dev-dependencies requirements
 
 Should do:
 
 - [astro.config.mjs](./astro.config.mjs)
-  - [ ] Adjust Astro's [prefetching strategy](https://docs.astro.build/en/guides/prefetch/#prefetch-configuration) to your likings
-- [ ] Check if your content is compatible with light / dark mode
+  - [X] Adjust Astro's [prefetching strategy](https://docs.astro.build/en/guides/prefetch/#prefetch-configuration) to your likings
+- [X] Check if your content is compatible with light / dark mode
 
 
 ## Deployment

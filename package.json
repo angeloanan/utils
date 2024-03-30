@@ -1,5 +1,5 @@
 {
-  "name": "personal-astro-template",
+  "name": "utils",
   "version": "0.0.1",
   "description": "",
   "author": {
@@ -16,7 +16,8 @@
   "dependencies": {
     "@astrojs/cloudflare": "^9.1.0",
     "@astrojs/node": "^8.2.3",
-    "sharp": "^0.33.2",
+    "@fontsource/iosevka-curly": "^5.0.7",
+    "@solid-primitives/clipboard": "^1.5.10",
     "solid-js": "^1.8.15"
   },
   "devDependencies": {

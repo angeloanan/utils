@@ -1,21 +1,24 @@
 import type { Props as SEOProps } from 'astro-seo'
 
 const defaultSEO: SEOProps = {
-  title: "Angelo's Astro Template",
-  titleTemplate: '%s | Astro Template',
+  titleDefault: "Angelo's Utils",
+  titleTemplate: "%s | Angelo's Utils",
 
-  description:
-    'An Astro template that helps you to focus on programming your site, rather than setting up your toolkits!',
+  description: 'A collection of utilities that I might find useful from time to time.',
 
   openGraph: {
     basic: {
       type: 'website',
-      title: "Angelo's Astro Template",
+      title: "Angelo's Utils",
       image: ''
     }
   },
 
-  twitter: {}
+  twitter: {
+    card: 'summary_large_image',
+    site: 'https://utils.angelo.fyi',
+    image: 'https://utils.angelo.fyi/og.png'
+  }
 }
 
 export default defaultSEO

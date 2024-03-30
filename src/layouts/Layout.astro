@@ -1,5 +1,7 @@
 ---
 import '@fontsource-variable/inter'
+import '@fontsource/iosevka-curly/400.css'
+
 import defaultSEO from '../default-seo.ts'
 import { SEO, type Props as SEOProps } from 'astro-seo'
 import { ViewTransitions } from 'astro:transitions'
@@ -12,7 +14,7 @@ export interface Props {
 
 const { seo } = Astro.props
 
-const finalSeo = Object.assign(defaultSEO, seo)
+const finalSeo = Object.assign(defaultSEO, seo ?? { title: null })
 ---
 
 <!doctype html>
@@ -21,12 +23,15 @@ const finalSeo = Object.assign(defaultSEO, seo)
     <meta charset='UTF-8' />
     <meta name='viewport' content='width=device-width, initial-scale=1' />
     <link rel='sitemap' href='/sitemap-index.xml' />
-    <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
+    <link rel='apple-touch-icon' sizes='180x180' href='/apple-touch-icon.png' />
+    <link rel='icon' type='image/png' sizes='32x32' href='/favicon-32x32.png' />
+    <link rel='icon' type='image/png' sizes='16x16' href='/favicon-16x16.png' />
+    <link rel='manifest' href='/site.webmanifest' />
     <SEO {...finalSeo} />
 
     <ViewTransitions />
   </Head>
-  <body class='bg-neutral-50 dark:bg-neutral-900'>
+  <body class='bg-stone-800'>
     <slot />
   </body>
 </html>
