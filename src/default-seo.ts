@@ -10,7 +10,7 @@ const defaultSEO: SEOProps = {
     basic: {
       type: 'website',
       title: "Angelo's Utils",
-      image: ''
+      image: 'https://utils.angelo.fyi/og.png'
     }
   },
 
