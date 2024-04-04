@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro'
 
 import RandomPortImage from '../assets/port.png'
+import QRCodeImage from '../assets/qr.png'
 import ToolCard from '../components/ToolCard.astro'
 
 const tools = [
@@ -10,6 +11,12 @@ const tools = [
     title: 'Random Port Selector',
     description: 'Select a random port to map your docker container on.',
     image: RandomPortImage
+  },
+  {
+    url: '/tools/qrcode',
+    title: 'QR Code',
+    description: 'Generate a QR code for a given content.',
+    image: QRCodeImage
   }
 ]
 ---
