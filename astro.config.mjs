@@ -20,12 +20,6 @@ export default defineConfig({
     service: squooshImageService()
   },
   adapter: cloudflare({
-    mode: 'advanced',
-    routes: {
-      strategy: 'auto',
-      include: [],
-      exclude: []
-    },
     imageService: 'compile'
   })
 })

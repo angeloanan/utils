@@ -1,16 +1,7 @@
-import defaultTheme from 'tailwindcss/defaultTheme'
-
 /** @type {import('tailwindcss/types').Config} */
 const extendedTheme = {
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
-  theme: {
-    extend: {
-      fontFamily: {
-        sans: ['Inter Variable', 'Inter', ...defaultTheme.fontFamily.sans],
-        mono: ['Iosevka Curly', ...defaultTheme.fontFamily.mono]
-      }
-    }
-  },
+  theme: {},
   plugins: [import('@tailwindcss/forms')]
 }
 

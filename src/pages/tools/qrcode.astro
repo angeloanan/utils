@@ -15,6 +15,10 @@ import { QRCodeGenerator } from '../../components/QRCodeGenerator.tsx'
 
     <hr class='my-4 border-stone-600' />
 
-    <QRCodeGenerator client:load />
+    <noscript>
+      As QR-codes are being generated client-side, you need to enable JavaScript to use this page.
+    </noscript>
+
+    <QRCodeGenerator client:only='solid-js' />
   </main>
 </Layout>
