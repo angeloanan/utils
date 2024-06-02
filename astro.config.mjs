@@ -21,5 +21,15 @@ export default defineConfig({
   },
   adapter: cloudflare({
     imageService: 'compile'
-  })
+  }),
+  vite: {
+    esbuild: {
+      target: 'es2022'
+    },
+    build: {
+      minify: 'terser',
+      cssMinify: 'lightningcss',
+      terserOptions: { compress: { passes: 2 } }
+    }
+  }
 })
