@@ -1,0 +1,24 @@
+---
+import { SteamToLeetify } from '../../components/SteamToLeetify.tsx'
+import Layout from '../../layouts/Layout.astro'
+---
+
+<Layout
+  seo={{
+    title: 'Steam to Leetify Profile Lookup'
+  }}
+>
+  <main class='mx-auto my-8 max-w-prose px-4 text-stone-300 md:px-0'>
+    <a href='/' class='font-light text-stone-300'> &larr; Back to tools list</a>
+
+    <h1 class='mt-2 text-4xl font-semibold text-stone-100'>Steam to Leetify Profile Lookup</h1>
+
+    <hr class='my-4 border-stone-600' />
+
+    <noscript>
+      As calculations are being done client-side, you need to enable JavaScript to use this page.
+    </noscript>
+
+    <SteamToLeetify client:only='solid-js' />
+  </main>
+</Layout>

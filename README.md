@@ -4,7 +4,7 @@ This is my personal template for an [Astro](https://astro.build) project.
 
 It uses the following stack:
 
-* [pnpm](https://pnpm.io)
+* [Bun](https://bun.io)
 * [SolidJS](https://solidjs.org)
 * [TailwindCSS](https://tailwindcss.com)
 
@@ -74,7 +74,7 @@ docker run -p 4321:4321 username/image-name
 
 ### Cloudflare
 
-To deploy the app using Cloudflare, you will need to replace the `output` at [astro.config.mjs](./astro.config.mjs) with `cloudflare`.  
+To deploy the app using Cloudflare, you will need to replace the `output` at [astro.config.mjs](./astro.config.mjs) with `cloudflare`.
 By default, uncommenting the code will deploy the app using Cloudflare Workers.
 
 You can import the app to your Cloudflare account by importing the Git repository via Cloudflare's web interface.

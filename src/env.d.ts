@@ -1,8 +1,8 @@
+/// <reference path="../.astro/types.d.ts" />
 /// <reference types="@astrojs/client" />
 
 interface ImportMetaEnv {
-  // Add your own env variables here. Example:
-  // readonly ADMIN_PASSWORD: string
+  readonly STEAM_API_KEY: string
 }
 
 interface ImportMeta {
