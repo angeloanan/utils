@@ -2,6 +2,7 @@
   "name": "utils",
   "version": "0.0.1",
   "description": "",
+  "type": "module",
   "author": {
     "name": "Christopher Angelo",
     "email": "angelo@angeloanan.xyz",
