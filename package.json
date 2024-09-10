@@ -12,6 +12,7 @@
     "build": "astro build",
     "check": "astro check && tsc --noEmit",
     "dev": "astro dev",
+    "deploy": "astro build && wrangler pages deploy dist",
     "start": "node ./dist/server/entry.mjs"
   },
   "dependencies": {
