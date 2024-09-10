@@ -16,7 +16,6 @@
   },
   "dependencies": {
     "@astrojs/cloudflare": "^11.0.4",
-    "@astrojs/node": "^8.3.3",
     "@solid-primitives/clipboard": "^1.5.10",
     "@solid-primitives/scheduled": "^1.4.3",
     "qrcode": "^1.5.4",

@@ -1,5 +1,5 @@
 import { defineConfig, squooshImageService } from 'astro/config'
-import tailwind from '@astrojs/tailwind'
+// import tailwind from '@astrojs/tailwind'
 
 import solidJs from '@astrojs/solid-js'
 import sitemap from '@astrojs/sitemap'
@@ -11,16 +11,21 @@ import cloudflare from '@astrojs/cloudflare'
 // https://astro.build/config
 export default defineConfig({
   site: 'https://utils.angelo.fyi',
-  prefetch: {
-    prefetchAll: true
-  },
-  integrations: [solidJs(), tailwind(), sitemap(), robots()],
-  output: 'hybrid',
-  // image: {
-  //   service: squooshImageService()
+  // prefetch: {
+  //   prefetchAll: true
   // },
+  integrations: [
+    solidJs(),
+    // tailwind()
+    sitemap(),
+    robots()
+  ],
+  output: 'hybrid',
+  image: {
+    service: squooshImageService()
+  },
   adapter: cloudflare({
-    // imageService: 'compile'
+    imageService: 'compile'
   }),
   vite: {
     esbuild: {
