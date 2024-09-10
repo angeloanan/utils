@@ -16,11 +16,11 @@ export default defineConfig({
   },
   integrations: [solidJs(), tailwind(), sitemap(), robots()],
   output: 'hybrid',
-  image: {
-    service: squooshImageService()
-  },
+  // image: {
+  //   service: squooshImageService()
+  // },
   adapter: cloudflare({
-    imageService: 'compile'
+    // imageService: 'compile'
   }),
   vite: {
     esbuild: {
