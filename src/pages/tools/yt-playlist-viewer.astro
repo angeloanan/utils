@@ -1,0 +1,27 @@
+---
+import { YoutubePlaylistViewer } from '../../components/YoutubePlaylistViewer/index'
+import Layout from '../../layouts/Layout.astro'
+---
+
+<Layout
+  seo={{
+    title: 'YouTube Playlist Viewer'
+  }}
+>
+  <main class='my-8 px-4 text-stone-300 md:px-0'>
+    <div class='mx-auto max-w-prose'>
+      <a href='/' class='font-light text-stone-300'> &larr; Back to tools list</a>
+
+      <h1 class='mt-2 text-4xl font-semibold text-stone-100'>YouTube Playlist Viewer</h1>
+
+      <hr class='my-4 border-stone-600' />
+
+      <noscript
+        >As most data processing are being done client-side, you'll need to enable JavaScript to use
+        this page.</noscript
+      >
+    </div>
+
+    <YoutubePlaylistViewer client:only='solid-js' />
+  </main>
+</Layout>

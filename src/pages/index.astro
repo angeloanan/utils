@@ -6,6 +6,7 @@ import ToolCard from '../components/ToolCard.astro'
 import RandomPortImage from '../assets/port.png'
 import QRCodeImage from '../assets/qr.png'
 import Steam2LeetifyImage from '../assets/steam2leetify.png'
+import YtPlaylistViewer from '../assets/playlistviewer.png'
 
 const tools = [
   {
@@ -19,12 +20,18 @@ const tools = [
     title: 'QR Code Generator',
     description: 'Generate a QR code for a given content.',
     image: QRCodeImage
-  }, 
+  },
   {
     url: '/tools/steam2leetify',
     title: 'Steam to Leetify',
     description: 'Gets the Leetify profile of a Steam user.',
     image: Steam2LeetifyImage
+  },
+  {
+    url: '/tools/yt-playlist-viewer',
+    title: 'YouTube Playlist Viewer',
+    description: 'Make youtube playlist scrolling usable',
+    image: YtPlaylistViewer
   }
 ]
 ---

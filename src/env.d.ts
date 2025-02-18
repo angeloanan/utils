@@ -3,6 +3,7 @@
 
 interface ImportMetaEnv {
   readonly STEAM_API_KEY: string
+  readonly PUBLIC_YT_API_KEY: string
 }
 
 interface ImportMeta {
