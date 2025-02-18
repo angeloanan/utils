@@ -15,7 +15,7 @@ export default defineConfig({
   prefetch: {
     prefetchAll: true
   },
-  integrations: [solidJs(), sitemap(), robots()],
+  integrations: [solidJs({ devtools: import.meta.env.DEV }), sitemap(), robots()],
   output: 'static',
   adapter: cloudflare({
     imageService: 'compile'
