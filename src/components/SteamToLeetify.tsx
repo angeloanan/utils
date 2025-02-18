@@ -79,7 +79,7 @@ export const SteamToLeetify = () => {
     <div class=''>
       <div class='flex gap-2'>
         <input
-          class='order-2 mt-2 block w-full flex-1 rounded-md border-2 border-stone-600 p-2 text-neutral-800'
+          class='order-2 mt-2 block w-full flex-1 rounded-md border-2 border-stone-600 bg-white p-2 text-neutral-800'
           placeholder='Steam ID / username / profile link'
           ref={inputRef}
           onsubmit={onLookup}

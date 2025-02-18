@@ -62,7 +62,7 @@ export const QRCodeGenerator = () => {
           id='content'
           onInput={updateContent}
           placeholder='Your QR code content...'
-          class='w-full rounded-lg border-2 border-stone-600 p-2 text-stone-900'
+          class='w-full rounded-lg border-2 border-stone-600 bg-white p-2 text-stone-900'
         />
 
         {/* @ts-expect-error: Incorrect typings */}

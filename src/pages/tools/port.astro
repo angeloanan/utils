@@ -15,10 +15,10 @@ import { PortSelector } from '../../components/PortSelector.tsx'
 
     <hr class='my-4 border-stone-600' />
 
-    <noscript>
-      As ports are being generated client-side, you need to enable JavaScript to use this page.
-    </noscript>
+    <noscript
+      >As ports are being generated client-side, you need to enable JavaScript to use this page.</noscript
+    >
 
-    <PortSelector client:only='solid-js' />
+    <PortSelector client:load />
   </main>
 </Layout>
