@@ -2,6 +2,9 @@ import { toDataURL } from 'qrcode'
 import { createEffect, createSignal, onMount } from 'solid-js'
 import { debounce } from '@solid-primitives/scheduled'
 
+const whitePixel =
+  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAEElEQVR4AQEFAPr/AP////8J+wP9o9FJCgAAAABJRU5ErkJggg=='
+
 export const QRCodeGenerator = () => {
   const [content, setContent] = createSignal('empty')
   const [eccLevel, setEccLevel] = createSignal<'low' | 'medium' | 'quartile' | 'high'>('low')
@@ -13,9 +16,9 @@ export const QRCodeGenerator = () => {
     setContent(e.target.value)
   }, 500)
 
-  const [dataUrl, setDataUrl] = createSignal('')
+  const [dataUrl, setDataUrl] = createSignal<string>()
   const imageBlob = () => {
-    const byteString = atob(dataUrl().split(',')[1]!)
+    const byteString = atob(dataUrl()!.split(',')[1]!)
     const buffer = new ArrayBuffer(byteString.length)
     const intArray = new Uint8Array(buffer)
     for (let i = 0; i < byteString.length; i++) {
@@ -113,7 +116,7 @@ export const QRCodeGenerator = () => {
       </div>
 
       <div class='mx-auto flex-col'>
-        <img src={dataUrl()} alt='' />
+        <img src={dataUrl() ?? whitePixel} class='h-52 w-52 bg-white' alt='' />
 
         <div class='mt-2'>
           <button

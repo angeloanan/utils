@@ -26,12 +26,15 @@ export const PortSelector = () => {
   return (
     <div class='text-center'>
       <p class='text-xl font-medium'>Your random port</p>
-      <span class='mt-2 block font-mono text-5xl tabular-nums text-stone-100'>{port()}</span>
+      <span class='mt-2 block font-mono text-5xl text-stone-100 tabular-nums'>
+        {port() ?? '.....'}
+      </span>
 
       <div class='mx-auto mt-2 flex justify-center'>
         <button
           class='mx-2 flex items-center rounded-full bg-sky-600 px-4 py-2 text-sky-100 active:bg-sky-700'
           onClick={copyPort}
+          disabled={port() == null}
         >
           <ClipboardIcon />
           <span class='ml-1'>Copy</span>
