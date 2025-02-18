@@ -12,9 +12,9 @@ import { PlaylistView } from './PlaylistView'
 // https://youtube.com/playlist?               list=PLhyHc3W8oSov-ucuA2YzzFMTJPZ6GNXJy&si=pI8P0n2dtH_YzeVt
 const parseYoutubePlaylistId = (rawInput: string) => {
   if (!rawInput.includes('/')) {
-    return rawInput
+    return rawInput.trim()
   }
-  const url = new URL(rawInput)
+  const url = new URL(rawInput.trim())
   const params = url.searchParams
 
   return params.get('list')

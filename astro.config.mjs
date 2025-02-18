@@ -24,6 +24,7 @@ export default defineConfig({
   //   mode: 'standalone'
   // }),
   vite: {
+    plugins: [tailwind()],
     esbuild: {
       target: 'es2022'
     },
@@ -32,8 +33,6 @@ export default defineConfig({
       minify: 'terser',
       cssMinify: 'lightningcss',
       terserOptions: { compress: { passes: 2 } }
-    },
-
-    plugins: [tailwind()]
+    }
   }
 })
