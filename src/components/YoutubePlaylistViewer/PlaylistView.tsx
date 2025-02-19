@@ -43,7 +43,8 @@ export interface YoutubePlaylistItem {
     playlistId: string
     position: number
     resourceId: { videoId: string }
-    videoOwnerChannelTitle: string
+    videoOwnerChannelTitle?: string
+    videoOwnerChannelId?: string
   }
   contentDetails: { videoId: string; videoPublishedAt?: string }
   status: { privacyStatus: string }
@@ -57,6 +58,13 @@ export interface YoutubePlaylistDetail {
     publishedAt: string
     title: string
     description: string
+    thumbnails: {
+      maxres?: { url: string }
+      high?: { url: string }
+      medium?: { url: string }
+      standard?: { url: string }
+      default?: { url: string }
+    }
 
     channelId: string
     channelTitle: string
@@ -126,15 +134,17 @@ export const PlaylistView = ({ playlistId }: PlaylistViewProps) => {
         <ol class='mx-auto grid max-w-7xl grid-cols-2 gap-2 md:grid-cols-3 md:gap-4 lg:grid-cols-4 xl:grid-cols-6'>
           <For each={allVideos()}>{(item) => <VideoEntry video={item} />}</For>
           <Show when={query.hasNextPage}>
-            <FetchMoreEntry ref={fetchMoreEntryElement} />
+            <FetchMoreEntry
+              ref={fetchMoreEntryElement}
+              cb={query.fetchNextPage}
+              isFetching={query.isFetchingNextPage}
+            />
           </Show>
         </ol>
 
         <Show when={!query.hasNextPage && !query.isLoading}>
           <EndOfPlaylistLine />
         </Show>
-
-        <pre class='mt-8 max-h-96 overflow-scroll'>{JSON.stringify(query.data, null, 2)}</pre>
       </section>
     </>
   )
@@ -163,26 +173,51 @@ const PlaylistHeader: Component<{ playlistId: Accessor<string> }> = ({ playlistI
     staleTime: Infinity
   }))
 
+  const thumbnails = query.data?.snippet.thumbnails
+  const thumbnail =
+    thumbnails?.maxres?.url ??
+    thumbnails?.high?.url ??
+    thumbnails?.medium?.url ??
+    thumbnails?.standard?.url ??
+    thumbnails?.default?.url ??
+    null
+
   return (
     <section class='mx-auto mt-8 min-h-48 w-full max-w-2xl rounded bg-stone-700 px-4 py-2'>
       <div class='line-clamp-1 text-xs'>
         Playlist ID: <span class='font-mono text-base'>{playlistId()}</span>
       </div>
 
-      <div class='mt-6 text-sm'>
-        Playlist by {query.data?.snippet.channelTitle} &#183; Created{' '}
-        {!query.isLoading &&
-          formatDistanceToNow(query.data?.snippet.publishedAt!, { addSuffix: true })}
-      </div>
-      <div class='text-4xl'>
-        <Show when={!query.isLoading} fallback='...'>
-          {query.data?.snippet.title}
-        </Show>
-      </div>
-      <div class='mt-2'>
-        <Show when={!query.isLoading} fallback='...'>
-          {query.data?.snippet.description}
-        </Show>
+      <div class='mt-6 flex'>
+        <div class='flex-1'>
+          <div class='text-sm'>
+            Playlist by {query.data?.snippet.channelTitle} &#183; Created{' '}
+            {!query.isLoading &&
+              formatDistanceToNow(query.data?.snippet.publishedAt!, { addSuffix: true })}
+          </div>
+          <div class='text-4xl'>
+            <Show when={!query.isLoading} fallback='...'>
+              <a
+                class='hover:underline'
+                href={`https://youtube.com/playlist?list=${playlistId()}`}
+                target='_blank'
+              >
+                {query.data?.snippet.title}
+              </a>
+            </Show>
+          </div>
+          <div class='mt-2'>
+            <Show when={!query.isLoading} fallback='...'>
+              {query.data?.snippet.description}
+            </Show>
+          </div>
+        </div>
+
+        <div class='aspect-video max-h-28 rounded bg-black'>
+          <Show when={thumbnail != null}>
+            <img src={thumbnail!} class='max-h-28 rounded' />
+          </Show>
+        </div>
       </div>
     </section>
   )

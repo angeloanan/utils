@@ -1,6 +1,6 @@
 import { formatDistanceToNow } from 'date-fns/formatDistanceToNow'
 import type { YoutubePlaylistItem } from './PlaylistView'
-import { Show } from 'solid-js'
+import { Match, Show, Switch } from 'solid-js'
 
 interface VideoEntryProps {
   video: YoutubePlaylistItem
@@ -35,7 +35,15 @@ export const VideoEntry = ({ video }: VideoEntryProps) => {
 
   return (
     <li class='block rounded bg-stone-700'>
-      <a href={'https://youtube.com/watch?v=' + video.contentDetails.videoId} target='_blank'>
+      <div class='flex px-1 text-[0.6rem] font-light'>
+        <div class='flex-1'>Added {timeAdded}</div>
+        <span>{video.snippet.position + 1}</span>
+      </div>
+      <a
+        href={'https://youtube.com/watch?v=' + video.contentDetails.videoId}
+        target='_blank'
+        class='mt-2 visited:text-slate-300 visited:italic hover:underline'
+      >
         <Show
           when={highestThumbnail != null}
           fallback={<div class='aspect-video w-full rounded-t bg-black' />}
@@ -49,16 +57,23 @@ export const VideoEntry = ({ video }: VideoEntryProps) => {
           {video.snippet.title}
         </div>
       </a>
-
-      <div class='px-1 text-xs font-light'>
-        by {video.snippet.videoOwnerChannelTitle ?? '(Unknown)'}
-      </div>
-      <div class='mt-2 px-1 text-[0.6rem] font-light'>
-        {video.contentDetails.videoPublishedAt != null
-          ? `Published ${timePosted}`
-          : 'Unknown publish time'}{' '}
-        &#183; Added {timeAdded}
-      </div>
+      <Switch>
+        <Match when={video.snippet.videoOwnerChannelTitle != null}>
+          <a
+            href={`https://youtube.com/channel/${video.snippet.videoOwnerChannelId}`}
+            class='my-2 block w-full px-1 text-xs font-light hover:underline'
+            target='_blank'
+          >
+            by {video.snippet.videoOwnerChannelTitle} &#183;{' '}
+            {video.contentDetails.videoPublishedAt != null
+              ? `${timePosted}`
+              : 'Unknown publish time'}
+          </a>
+        </Match>
+        <Match when={video.snippet.videoOwnerChannelTitle == null}>
+          <span class='my-2 block px-1 text-xs font-light'>by an unknown channel</span>
+        </Match>
+      </Switch>
     </li>
   )
 }

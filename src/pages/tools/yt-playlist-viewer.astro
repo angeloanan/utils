@@ -1,6 +1,8 @@
 ---
 import { YoutubePlaylistViewer } from '../../components/YoutubePlaylistViewer/index'
 import Layout from '../../layouts/Layout.astro'
+
+export const prerender = false
 ---
 
 <Layout
@@ -22,6 +24,6 @@ import Layout from '../../layouts/Layout.astro'
       >
     </div>
 
-    <YoutubePlaylistViewer client:load />
+    <YoutubePlaylistViewer client:only />
   </main>
 </Layout>
