@@ -1,86 +1,22 @@
-import {
-  createInfiniteQuery,
-  createQuery,
-  type QueryFunction,
-  type QueryKey
-} from '@tanstack/solid-query'
-import { createEffect, For, Show, type Accessor, type Component } from 'solid-js'
+import { createInfiniteQuery, type QueryFunction, type QueryKey } from '@tanstack/solid-query'
+import { createEffect, For, Show, useContext, type Accessor, type Component } from 'solid-js'
 import { VideoEntry } from './VideoEntry'
 import { FetchMoreEntry } from './FetchMoreEntry'
 import { EndOfPlaylistLine } from './EndOfPlaylist'
 import { createVisibilityObserver } from '@solid-primitives/intersection-observer'
-import { formatDistanceToNow } from 'date-fns'
-
-// Partial
-export interface YoutubePlaylistItemListResponse {
-  kind: string
-  etag: string
-  nextPageToken?: string
-  items: YoutubePlaylistItem[]
-  pageInfo: {
-    totalResults: number
-    resultsPerPage: number
-  }
-}
-
-export interface YoutubePlaylistItem {
-  kind: string
-  etag: string
-  id: string
-  snippet: {
-    publishedAt: string
-    channelId: string
-    title: string
-    description: string
-    thumbnails: {
-      maxres?: { url: string }
-      high?: { url: string }
-      medium?: { url: string }
-      standard?: { url: string }
-      default?: { url: string }
-    }
-    channelTitle: string
-    playlistId: string
-    position: number
-    resourceId: { videoId: string }
-    videoOwnerChannelTitle?: string
-    videoOwnerChannelId?: string
-  }
-  contentDetails: { videoId: string; videoPublishedAt?: string }
-  status: { privacyStatus: string }
-}
-
-export interface YoutubePlaylistDetailResponse {
-  items: YoutubePlaylistDetail[]
-}
-export interface YoutubePlaylistDetail {
-  snippet: {
-    publishedAt: string
-    title: string
-    description: string
-    thumbnails: {
-      maxres?: { url: string }
-      high?: { url: string }
-      medium?: { url: string }
-      standard?: { url: string }
-      default?: { url: string }
-    }
-
-    channelId: string
-    channelTitle: string
-  }
-  status: { privacyStatus: string }
-  contentDetails: { itemCount: number }
-}
+import { SettingsContext } from './ViewerSettings'
+import type { YoutubePlaylistItemListResponse } from './types'
+import { PlaylistHeader } from './PlaylistHeader'
 
 const BASE_API_PLAYLIST_ITEMS_URL = 'https://www.googleapis.com/youtube/v3/playlistItems'
-const BASE_API_PLAYLIST_DETAIL_URL = 'https://www.googleapis.com/youtube/v3/playlists'
 
 const fetchPlaylistEntries: QueryFunction<
   YoutubePlaylistItemListResponse,
   QueryKey,
   string | undefined
 > = async (ctx) => {
+  const { settings } = useContext(SettingsContext)!
+
   const params = new URLSearchParams()
   params.append('key', import.meta.env.PUBLIC_YT_API_KEY)
   params.append('part', 'id,snippet,status,contentDetails')
@@ -92,7 +28,16 @@ const fetchPlaylistEntries: QueryFunction<
     params.append('pageToken', ctx.pageParam)
   }
 
-  const req = await fetch(BASE_API_PLAYLIST_ITEMS_URL + '?' + params.toString())
+  const headers =
+    settings.accessToken != null
+      ? {
+          Authorization: `Bearer ${settings.accessToken}`
+        }
+      : {}
+
+  const req = await fetch(BASE_API_PLAYLIST_ITEMS_URL + '?' + params.toString(), {
+    headers
+  })
   const res = await req.json()
   if ('error' in res) {
     throw 'Playlist not found'
@@ -104,7 +49,7 @@ const fetchPlaylistEntries: QueryFunction<
 interface PlaylistViewProps {
   playlistId: Accessor<string>
 }
-export const PlaylistView = ({ playlistId }: PlaylistViewProps) => {
+export const PlaylistView: Component<PlaylistViewProps> = ({ playlistId }) => {
   let fetchMoreEntryElement!: HTMLButtonElement
 
   const query = createInfiniteQuery(() => ({
@@ -136,8 +81,10 @@ export const PlaylistView = ({ playlistId }: PlaylistViewProps) => {
           <Show when={query.hasNextPage}>
             <FetchMoreEntry
               ref={fetchMoreEntryElement}
-              cb={query.fetchNextPage}
-              isFetching={query.isFetchingNextPage}
+              cb={() => {
+                query.fetchNextPage()
+              }}
+              isFetching={() => query.isFetchingNextPage}
             />
           </Show>
         </ol>
@@ -147,78 +94,5 @@ export const PlaylistView = ({ playlistId }: PlaylistViewProps) => {
         </Show>
       </section>
     </>
-  )
-}
-
-const fetchPlaylistDetail: QueryFunction<YoutubePlaylistDetail> = async (ctx) => {
-  const params = new URLSearchParams()
-  params.append('key', import.meta.env.PUBLIC_YT_API_KEY)
-  params.append('part', 'contentDetails,snippet,status')
-  params.append('maxResults', '1')
-  params.append('id', ctx.queryKey[1] as string)
-
-  const req = await fetch(BASE_API_PLAYLIST_DETAIL_URL + '?' + params.toString())
-  const res: YoutubePlaylistDetailResponse = await req.json()
-  if (res.items.length == 0) {
-    throw 'Playlist not found'
-  }
-
-  return res.items[0]!
-}
-
-const PlaylistHeader: Component<{ playlistId: Accessor<string> }> = ({ playlistId }) => {
-  const query = createQuery(() => ({
-    queryKey: ['playlist', playlistId()],
-    queryFn: fetchPlaylistDetail,
-    staleTime: Infinity
-  }))
-
-  const thumbnails = query.data?.snippet.thumbnails
-  const thumbnail =
-    thumbnails?.maxres?.url ??
-    thumbnails?.high?.url ??
-    thumbnails?.medium?.url ??
-    thumbnails?.standard?.url ??
-    thumbnails?.default?.url ??
-    null
-
-  return (
-    <section class='mx-auto mt-8 min-h-48 w-full max-w-2xl rounded bg-stone-700 px-4 py-2'>
-      <div class='line-clamp-1 text-xs'>
-        Playlist ID: <span class='font-mono text-base'>{playlistId()}</span>
-      </div>
-
-      <div class='mt-6 flex'>
-        <div class='flex-1'>
-          <div class='text-sm'>
-            Playlist by {query.data?.snippet.channelTitle} &#183; Created{' '}
-            {!query.isLoading &&
-              formatDistanceToNow(query.data?.snippet.publishedAt!, { addSuffix: true })}
-          </div>
-          <div class='text-4xl'>
-            <Show when={!query.isLoading} fallback='...'>
-              <a
-                class='hover:underline'
-                href={`https://youtube.com/playlist?list=${playlistId()}`}
-                target='_blank'
-              >
-                {query.data?.snippet.title}
-              </a>
-            </Show>
-          </div>
-          <div class='mt-2'>
-            <Show when={!query.isLoading} fallback='...'>
-              {query.data?.snippet.description}
-            </Show>
-          </div>
-        </div>
-
-        <div class='aspect-video max-h-28 rounded bg-black'>
-          <Show when={thumbnail != null}>
-            <img src={thumbnail!} class='max-h-28 rounded' />
-          </Show>
-        </div>
-      </div>
-    </section>
   )
 }

@@ -1,11 +1,11 @@
-import { formatDistanceToNow } from 'date-fns/formatDistanceToNow'
-import type { YoutubePlaylistItem } from './PlaylistView'
-import { Match, Show, Switch } from 'solid-js'
+import type { YoutubePlaylistItem } from './types'
+import { Match, Show, Switch, type Component } from 'solid-js'
+import { formatTimeDistance } from './utils'
 
 interface VideoEntryProps {
   video: YoutubePlaylistItem
 }
-export const VideoEntry = ({ video }: VideoEntryProps) => {
+export const VideoEntry: Component<VideoEntryProps> = ({ video }) => {
   const thumbnails = video.snippet.thumbnails
   const highestThumbnail =
     thumbnails.maxres?.url ??
@@ -15,23 +15,8 @@ export const VideoEntry = ({ video }: VideoEntryProps) => {
     thumbnails.default?.url ??
     null
 
-  const timePosted = formatDistanceToNow(video.contentDetails?.videoPublishedAt ?? '0', {
-    addSuffix: true
-  })
-    .replaceAll('about ', '')
-    .replaceAll('almost ', '~')
-    .replaceAll('over ', '>')
-    .replaceAll(' months', 'mo')
-    .replaceAll(' year', 'yr')
-    .replaceAll(' years', 'yr')
-
-  const timeAdded = formatDistanceToNow(video.snippet.publishedAt ?? '0', { addSuffix: true })
-    .replaceAll('about ', '')
-    .replaceAll('almost ', '~')
-    .replaceAll('over ', '>')
-    .replaceAll(' months', 'mo')
-    .replaceAll(' year', 'yr')
-    .replaceAll(' years', 'yr')
+  const timePosted = formatTimeDistance(video.contentDetails.videoPublishedAt)
+  const timeAdded = formatTimeDistance(video.snippet.publishedAt)
 
   return (
     <li class='block rounded bg-stone-700'>

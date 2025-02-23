@@ -1,47 +1,18 @@
 import { QueryClientProvider } from '@tanstack/solid-query'
 import { queryClient } from '../../lib/solid-query'
-import { createSignal, ErrorBoundary, Show } from 'solid-js'
+import { createSignal, ErrorBoundary, Match, onMount, Show, Switch, useContext } from 'solid-js'
 import { SolidQueryDevtools } from '@tanstack/solid-query-devtools'
 import { PlaylistView } from './PlaylistView'
-
-// Watching a playlist
-// https://www.youtube.com/watch?v=X67NqIR5wpE&list=PLhyHc3W8oSov-ucuA2YzzFMTJPZ6GNXJy
-// Direct URL copy
-// https://www.youtube.com/playlist?           list=PLB13753FB0FD0B8A5
-// Shared - Desktop
-// https://youtube.com/playlist?               list=PLhyHc3W8oSov-ucuA2YzzFMTJPZ6GNXJy&si=pI8P0n2dtH_YzeVt
-const parseYoutubePlaylistId = (rawInput: string) => {
-  if (!rawInput.includes('/')) {
-    return rawInput.trim()
-  }
-  const url = new URL(rawInput.trim())
-  const params = url.searchParams
-
-  return params.get('list')
-}
-
-const loginWithGoogle = () => {
-  const googleOAuthBaseUrl = 'https://accounts.google.com/o/oauth2/v2/auth'
-  const searchParams = new URLSearchParams()
-  searchParams.append(
-    'client_id',
-    '344507265100-7bqbplrc3j13h9jbthquffsqs9mnfvev.apps.googleusercontent.com'
-  )
-  searchParams.append(
-    'redirect_uri',
-    (import.meta.env.DEV ? 'http://localhost:4321' : 'https://utils.angelo.fyi') +
-      '/tools/yt-playlist-viewer'
-  )
-  searchParams.append('response_type', 'token')
-  searchParams.append('scope', 'https://www.googleapis.com/auth/youtube.readonly')
-
-  window.location.href = googleOAuthBaseUrl + '?' + searchParams.toString()
-}
+import { SettingsContext, Provider as ViewerSettings } from './ViewerSettings'
+import { LoggedInUserIndicator } from './LoggedInUserIndicator'
+import { loginWithGoogle, parseGoogleToken, parseYoutubePlaylistId } from './utils'
 
 const Inner = () => {
   let playlistIdInput!: HTMLInputElement
 
+  const { settings, updateSettings } = useContext(SettingsContext)!
   const [playlistId, setPlaylistId] = createSignal<string>('')
+
   const refetchPlaylistData = () => {
     const id = parseYoutubePlaylistId(playlistIdInput.value)
     console.log('Parsed PlaylistID', id)
@@ -51,19 +22,60 @@ const Inner = () => {
     }
   }
 
+  // Parse Google Access Token
+  onMount(() => {
+    let token = parseGoogleToken()
+    if (token != null) {
+      updateSettings('accessToken', token)
+    }
+  })
+
   return (
     <div>
-      <section class='mx-auto flex max-w-prose gap-2'>
-        <input
-          ref={playlistIdInput}
-          onSubmit={refetchPlaylistData}
-          type='text'
-          class='w-full rounded-md bg-white px-2 py-1 text-neutral-800'
-          placeholder='YouTube Watch + Playlist URL / Playlist URL / Playlist ID'
-        />
-        <button class='rounded-md bg-pink-500 px-2 py-1 text-white' onClick={refetchPlaylistData}>
-          &rarr;
-        </button>
+      <section class='mx-auto max-w-prose'>
+        <div class='flex justify-end gap-2'>
+          <Switch>
+            <Match when={settings.accessToken == null}>
+              <button
+                class='cursor-pointer rounded-md bg-blue-900 px-3 py-1.5 text-xs text-white'
+                onClick={loginWithGoogle}
+              >
+                Log in
+              </button>
+            </Match>
+            <Match when={settings.accessToken != null}>
+              <LoggedInUserIndicator />
+            </Match>
+          </Switch>
+        </div>
+
+        <div class='mt-2 flex gap-2'>
+          <input
+            ref={playlistIdInput}
+            onSubmit={refetchPlaylistData}
+            type='text'
+            class='w-full rounded-md bg-white px-2 py-1 text-neutral-800'
+            placeholder='YouTube Watch + Playlist URL / Playlist URL / Playlist ID'
+          />
+          <Show when={settings.accessToken != null}>
+            <button
+              title='Search Liked Videos'
+              class='cursor-pointer rounded-md bg-green-700 px-2 py-1 text-white'
+              onClick={() => {
+                playlistIdInput.value = 'LL'
+                refetchPlaylistData()
+              }}
+            >
+              👍
+            </button>
+          </Show>
+          <button
+            class='cursor-pointer rounded-md bg-pink-500 px-2 py-1 text-white'
+            onClick={refetchPlaylistData}
+          >
+            &rarr;
+          </button>
+        </div>
       </section>
 
       <ErrorBoundary fallback={(err, reset) => <div onClick={reset}>Error: {err.toString()}</div>}>
@@ -77,10 +89,12 @@ const Inner = () => {
 
 export const YoutubePlaylistViewer = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <Inner />
+    <ViewerSettings>
+      <QueryClientProvider client={queryClient}>
+        <Inner />
 
-      {import.meta.env.DEV && <SolidQueryDevtools />}
-    </QueryClientProvider>
+        {import.meta.env.DEV && <SolidQueryDevtools />}
+      </QueryClientProvider>
+    </ViewerSettings>
   )
 }
