@@ -6,34 +6,33 @@ import { formatDistanceToNow } from 'date-fns/formatDistanceToNow'
 
 const BASE_API_PLAYLIST_DETAIL_URL = 'https://www.googleapis.com/youtube/v3/playlists'
 
-const fetchPlaylistDetail: QueryFunction<YoutubePlaylistDetail> = async (ctx) => {
-  const { settings } = useContext(SettingsContext)!
-  const params = new URLSearchParams()
-  params.append('key', import.meta.env.PUBLIC_YT_API_KEY)
-  params.append('part', 'contentDetails,snippet,status')
-  params.append('maxResults', '1')
-  params.append('id', ctx.queryKey[1] as string)
-
-  const headers =
-    settings.accessToken != null
-      ? {
-          Authorization: `Bearer ${settings.accessToken}`
-        }
-      : {}
-
-  const req = await fetch(BASE_API_PLAYLIST_DETAIL_URL + '?' + params.toString(), { headers })
-  const res: YoutubePlaylistDetailResponse = await req.json()
-  if (res.items.length == 0) {
-    throw 'Playlist not found'
-  }
-
-  return res.items[0]!
-}
-
 export const PlaylistHeader: Component<{ playlistId: Accessor<string> }> = ({ playlistId }) => {
+  const { settings } = useContext(SettingsContext)!
+
   const query = createQuery(() => ({
     queryKey: ['playlist', playlistId()],
-    queryFn: fetchPlaylistDetail,
+    queryFn: async (ctx) => {
+      const params = new URLSearchParams()
+      params.append('key', import.meta.env.PUBLIC_YT_API_KEY)
+      params.append('part', 'contentDetails,snippet,status')
+      params.append('maxResults', '1')
+      params.append('id', ctx.queryKey[1] as string)
+
+      const headers =
+        settings.accessToken != null
+          ? {
+              Authorization: `Bearer ${settings.accessToken}`
+            }
+          : {}
+
+      const req = await fetch(BASE_API_PLAYLIST_DETAIL_URL + '?' + params.toString(), { headers })
+      const res: YoutubePlaylistDetailResponse = await req.json()
+      if (res.items.length == 0) {
+        throw 'Playlist not found'
+      }
+
+      return res.items[0]!
+    },
     staleTime: Infinity
   }))
 
