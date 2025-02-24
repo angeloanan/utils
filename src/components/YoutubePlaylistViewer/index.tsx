@@ -6,15 +6,15 @@ import { PlaylistView } from './PlaylistView'
 import { SettingsContext, Provider as ViewerSettings } from './ViewerSettings'
 import { LoggedInUserIndicator } from './LoggedInUserIndicator'
 import { loginWithGoogle, parseGoogleToken, parseYoutubePlaylistId } from './utils'
-import type { YoutubePlaylistDetailResponse, YoutubePlaylistItemListResponse } from './types'
-import { copyToClipboard, writeClipboard } from '@solid-primitives/clipboard'
+import type { YoutubePlaylistItemListResponse } from './types'
+import { writeClipboard } from '@solid-primitives/clipboard'
 
 const Inner = () => {
   let playlistIdInput!: HTMLInputElement
 
   const qc = useQueryClient()
   const { settings, updateSettings } = useContext(SettingsContext)!
-  const [isSettingsOpen, setSettingsOpen] = createSignal<boolean>(true)
+  const [isSettingsOpen, setSettingsOpen] = createSignal<boolean>(false)
   const [playlistId, setPlaylistId] = createSignal<string>('')
 
   const refetchPlaylistData = () => {
