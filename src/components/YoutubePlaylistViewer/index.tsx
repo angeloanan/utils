@@ -1,4 +1,4 @@
-import { QueryClientProvider } from '@tanstack/solid-query'
+import { QueryClientProvider, useQueryClient, type InfiniteData } from '@tanstack/solid-query'
 import { queryClient } from '../../lib/solid-query'
 import { createSignal, ErrorBoundary, Match, onMount, Show, Switch, useContext } from 'solid-js'
 import { SolidQueryDevtools } from '@tanstack/solid-query-devtools'
@@ -6,11 +6,15 @@ import { PlaylistView } from './PlaylistView'
 import { SettingsContext, Provider as ViewerSettings } from './ViewerSettings'
 import { LoggedInUserIndicator } from './LoggedInUserIndicator'
 import { loginWithGoogle, parseGoogleToken, parseYoutubePlaylistId } from './utils'
+import type { YoutubePlaylistDetailResponse, YoutubePlaylistItemListResponse } from './types'
+import { copyToClipboard, writeClipboard } from '@solid-primitives/clipboard'
 
 const Inner = () => {
   let playlistIdInput!: HTMLInputElement
 
+  const qc = useQueryClient()
   const { settings, updateSettings } = useContext(SettingsContext)!
+  const [isSettingsOpen, setSettingsOpen] = createSignal<boolean>(true)
   const [playlistId, setPlaylistId] = createSignal<string>('')
 
   const refetchPlaylistData = () => {
@@ -33,7 +37,16 @@ const Inner = () => {
   return (
     <div>
       <section class='mx-auto max-w-prose'>
-        <div class='flex justify-end gap-2'>
+        <div class='flex justify-between gap-2'>
+          <button
+            class='cursor-pointer rounded-md bg-neutral-600 px-2 py-1 text-xs text-stone-50'
+            onClick={() => {
+              setSettingsOpen((v) => !v)
+            }}
+          >
+            ⚙️ {isSettingsOpen() ? 'Advanced' : 'Simple'}
+          </button>
+
           <Switch>
             <Match when={settings.accessToken == null}>
               <button
@@ -76,6 +89,56 @@ const Inner = () => {
             &rarr;
           </button>
         </div>
+
+        <Show when={isSettingsOpen()}>
+          <div class='mt-2 rounded-md bg-neutral-900 px-4 py-2'>
+            <div class='flex gap-2'>
+              <button
+                class='cursor-pointer rounded-md bg-red-900 px-2 py-1 text-xs hover:bg-red-800'
+                onClick={() => {
+                  updateSettings('shouldFetchAllVideos', true)
+                }}
+              >
+                {!settings.shouldFetchAllVideos ? 'Fetch all videos' : 'Fetching...'}
+              </button>
+              <button
+                class='cursor-pointer rounded-md bg-neutral-700 px-2 py-1 text-xs hover:bg-neutral-600'
+                onClick={qc.clear}
+              >
+                🗑️ Clear cache
+              </button>
+              <button
+                class='cursor-pointer rounded-md bg-neutral-700 px-2 py-1 text-xs hover:bg-neutral-600'
+                onClick={() => {
+                  let data = qc.getQueryData<InfiniteData<YoutubePlaylistItemListResponse>>([
+                    'playlistItems',
+                    playlistId()
+                  ])
+                  let videos = data?.pages.flatMap((cb) => cb.items)
+                  if (videos != null) {
+                    writeClipboard(JSON.stringify(videos))
+                  }
+                }}
+              >
+                📋 Export data
+              </button>
+            </div>
+
+            <span class='mt-2 flex gap-1'>
+              <input
+                type='checkbox'
+                id='fetchOnScroll'
+                checked={settings.fetchOnScroll}
+                onChange={(v) => {
+                  updateSettings('fetchOnScroll', v.currentTarget.checked)
+                }}
+              />
+              <label for='fetchOnScroll' title='Loads in new videos when scrolling'>
+                Fetch on Scroll
+              </label>
+            </span>
+          </div>
+        </Show>
       </section>
 
       <ErrorBoundary fallback={(err, reset) => <div onClick={reset}>Error: {err.toString()}</div>}>

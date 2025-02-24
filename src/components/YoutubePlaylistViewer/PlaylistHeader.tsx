@@ -53,7 +53,7 @@ export const PlaylistHeader: Component<{ playlistId: Accessor<string> }> = ({ pl
 
       <div class='mt-6 flex'>
         <div class='flex-1'>
-          <div class='text-sm'>
+          <div class='text-sm font-light'>
             Playlist by {query.data?.snippet.channelTitle} &#183; Created{' '}
             {!query.isLoading &&
               formatDistanceToNow(query.data?.snippet.publishedAt!, { addSuffix: true })}
