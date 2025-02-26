@@ -95,7 +95,7 @@ export const PortSelector = () => {
 
         <hr class='mx-auto my-4 max-w-48'></hr>
 
-        <div class='mt-4 font-light'>Docker port mapping:</div>
+        <div class='mt-4 font-light'>Docker port mapping</div>
         <div class='font-mono'>outside:inside</div>
       </section>
     </div>
