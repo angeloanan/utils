@@ -9,13 +9,15 @@ import sitemap from '@astrojs/sitemap'
 import robots from 'astro-robots'
 import cloudflare from '@astrojs/cloudflare'
 
+import metaTags from 'astro-meta-tags'
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://utils.angelo.fyi',
   prefetch: {
     prefetchAll: true
   },
-  integrations: [solidJs({ devtools: import.meta.env.DEV }), sitemap(), robots()],
+  integrations: [solidJs({ devtools: import.meta.env.DEV }), sitemap(), robots(), metaTags()],
   output: 'static',
   adapter: cloudflare({
     imageService: 'compile'
@@ -30,6 +32,7 @@ export default defineConfig({
     },
 
     build: {
+      sourcemap: import.meta.env.DEV,
       minify: 'terser',
       cssMinify: 'lightningcss',
       terserOptions: { compress: { passes: 2 } }
