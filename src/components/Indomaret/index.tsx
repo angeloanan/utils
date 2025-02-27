@@ -107,6 +107,16 @@ const Inner: Component = () => {
     <div class='mx-auto max-w-xl'>
       <img src={qrDataUrl()} class='mx-auto h-64 w-64 bg-white' />
 
+      <div class='mx-auto my-8 text-center'>
+        <a
+          class='rounded-md bg-green-600 px-4 py-2 text-green-100'
+          href='gopay://payviaqr'
+          target='_blank'
+        >
+          Open GoPay
+        </a>
+      </div>
+
       <hr class='my-4' />
 
       <div class='mt-4'>
